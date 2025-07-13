@@ -25,13 +25,11 @@
 // }
 
 // import 'package:batch34_b/view/login_view.dart';
-import 'package:batch34_b/view/splash_view.dart';
+// import 'package:batch34_b/view/splash_view.dart';
+import 'package:batch34_b/app.dart';
 import 'package:flutter/material.dart';
 
 
 void main() {
-  runApp(MaterialApp(
-    home: SplashScreenView(),
-    debugShowCheckedModeBanner: false,
-  ));
+  runApp(App());
 }

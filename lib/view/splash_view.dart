@@ -3,9 +3,7 @@ import 'package:batch34_b/model/splash_model.dart';
 import 'package:batch34_b/view/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-// import 'package:yatra_app/model/splash_model.dart';
-// import 'package:yatra_app/view/signin_view.dart';
-// ignore: depend_on_referenced_packages
+
 import 'package:page_transition/page_transition.dart';
 
 
