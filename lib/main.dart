@@ -25,13 +25,41 @@
 // }
 
 // import 'package:batch34_b/view/login_view.dart';
-import 'package:batch34_b/view/splash_view.dart';
+// import 'package:batch34_b/view/splash_view.dart';
+
+
+
+
+
+// import 'package:batch34_b/app.dart';
+// import 'package:flutter/material.dart';
+
+
+// void main() {
+//   runApp(App());
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import 'package:batch34_b/app.dart';
+import 'package:batch34_b/app/service_locator/service_locator.dart';
+import 'package:batch34_b/core/network/hive_service.dart';
 import 'package:flutter/material.dart';
 
-
-void main() {
-  runApp(MaterialApp(
-    home: SplashScreenView(),
-    debugShowCheckedModeBanner: false,
-  ));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initDependencies();
+  await HiveService().init();
+  runApp(const App());
 }
