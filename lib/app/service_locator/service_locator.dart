@@ -129,6 +129,14 @@ import 'package:batch34_b/features/auth/domain/use_case/user_login_usecase.dart'
 import 'package:batch34_b/features/auth/domain/use_case/user_register_usecase.dart';
 import 'package:batch34_b/features/auth/presentation/view_model/login_view_model/login_view_model.dart';
 import 'package:batch34_b/features/auth/presentation/view_model/register_view_model/register_view_model.dart';
+import 'package:batch34_b/features/dashboard/data/data_source/dashboard_data_source.dart';
+import 'package:batch34_b/features/dashboard/data/data_source/remote_data_source/dashboard_remote_data_source.dart';
+import 'package:batch34_b/features/dashboard/data/repository/remote_repository/dashboard_remote_repository_impl.dart';
+import 'package:batch34_b/features/dashboard/domain/repository/dashboard_repository.dart';
+import 'package:batch34_b/features/dashboard/domain/use_case/get_all_collections_usecase.dart';
+import 'package:batch34_b/features/dashboard/domain/use_case/get_all_creators_usecase.dart';
+import 'package:batch34_b/features/dashboard/domain/use_case/get_available_products_usecase.dart';
+import 'package:batch34_b/features/dashboard/presentation/view_model/dashboard_view_model.dart';
 import 'package:batch34_b/features/splash/presentation/view_model/splash_view_model.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
@@ -147,6 +155,9 @@ Future<void> initDependencies() async {
   // Registering feature-specific dependencies
   _initAuthModule();
   _initSplashModule();
+  //for dashboard service locator
+  _initDashboardModule(); // Add this line
+
 }
 
 // Private helper to register all core services
@@ -222,3 +233,49 @@ void _initSplashModule() {
     () => SplashViewModel(serviceLocator<TokenSharedPrefs>()),
   );
 }
+
+//service locator for dashboard starts here:========================================
+
+void _initDashboardModule() {
+  // Data Source
+  serviceLocator.registerFactory<DashboardRemoteDataSource>(
+    () => DashboardRemoteDataSource(apiService: serviceLocator<ApiService>()),
+  );
+
+  // Repository
+  serviceLocator.registerFactory<IDashboardRepository>(
+    () => DashboardRemoteRepositoryImpl(
+      dashboardDataSource: serviceLocator<DashboardRemoteDataSource>(),
+    ),
+  );
+
+  // Usecases
+  serviceLocator.registerFactory<GetAllCollectionsUseCase>(
+    () => GetAllCollectionsUseCase(
+      serviceLocator<IDashboardRepository>(),
+    ),
+  );
+
+  serviceLocator.registerFactory<GetAvailableProductsUseCase>(
+    () => GetAvailableProductsUseCase(
+      serviceLocator<IDashboardRepository>(),
+    ),
+  );
+
+  serviceLocator.registerFactory<GetAllCreatorsUseCase>(
+    () => GetAllCreatorsUseCase(
+      serviceLocator<IDashboardRepository>(),
+    ),
+  );
+
+  // ViewModel (Bloc / Cubit)
+  serviceLocator.registerFactory<DashboardViewModel>(
+  () => DashboardViewModel(
+    getAllCollectionsUseCase: serviceLocator<GetAllCollectionsUseCase>(),
+    getAvailableProductsUseCase: serviceLocator<GetAvailableProductsUseCase>(),
+    getAllCreatorsUseCase: serviceLocator<GetAllCreatorsUseCase>(),
+  ),
+);
+}
+
+

@@ -22,3 +22,8 @@ class RemoteDatabaseFailure extends Failure {
 class SharedPreferencesFailure extends Failure {
   const SharedPreferencesFailure({required super.message});
 }
+// added for the failure response to the dashboard_remote_repository_impl
+class ServerFailure extends RemoteDatabaseFailure {
+  const ServerFailure({int? statusCode, required String message})
+      : super(statusCode: statusCode, message: message);
+}

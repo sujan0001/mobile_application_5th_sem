@@ -22,10 +22,10 @@ class UserApiModel extends Equatable {
     required this.password,
     this.role,
   });
-
+// from json. JSON lai dart ko code ma convert garnae
   factory UserApiModel.fromJson(Map<String, dynamic> json) =>
       _$UserApiModelFromJson(json);
-
+//to json. dart ko code lai JSON ma convert garnae
   Map<String, dynamic> toJson() => _$UserApiModelToJson(this);
 
   factory UserApiModel.fromEntity(UserEntity entity) {
