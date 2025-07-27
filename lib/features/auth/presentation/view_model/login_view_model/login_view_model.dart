@@ -5,6 +5,8 @@ import 'package:batch34_b/features/auth/presentation/view/signup_page_view.dart'
 import 'package:batch34_b/features/auth/presentation/view_model/login_view_model/login_event.dart';
 import 'package:batch34_b/features/auth/presentation/view_model/login_view_model/login_state.dart';
 import 'package:batch34_b/features/auth/presentation/view_model/register_view_model/register_view_model.dart';
+import 'package:batch34_b/features/dashboard/presentation/view/dashboard_page_view.dart';
+import 'package:batch34_b/features/dashboard/presentation/view_model/dashboard_view_model.dart';
 import 'package:batch34_b/view/dashboard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,11 +45,21 @@ class LoginViewModel extends Bloc<LoginEvent, LoginState> {
           message: 'Login Successful',
         );
         // Navigate to dashboard and remove all previous routes
+        // Navigator.pushAndRemoveUntil(
+        //   event.context,
+        //   MaterialPageRoute(builder: (_) => const DashboardPage()),
+        //   (route) => false,
+        // );
         Navigator.pushAndRemoveUntil(
-          event.context,
-          MaterialPageRoute(builder: (_) => const DashboardPage()),
-          (route) => false,
-        );
+        event.context,
+        MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: serviceLocator<DashboardViewModel>(),
+            child: const DashboardPageView(),
+          ),
+        ),
+        (route) => false,
+      );
       },
     );
   }
