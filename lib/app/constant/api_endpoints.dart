@@ -6,9 +6,9 @@ class ApiEndpoints {
 
   // Replace with your machine's IP if running on a physical device
   // static const String serverAddress = "http://10.0.2.2:5050"; // thsi is done when i am using the android emulator
-  static const String serverAddress = "http://192.168.1.4:5050";  //this is used when i am using the physical device
+  static const String serverAddress = "http://192.168.1.10:5050";  //this is used when i am using the physical device
   static const String baseUrl = "$serverAddress/";
-  static const String imageUrl = "$baseUrl/uploads/";
+  static const String imageUrl = "${serverAddress}/uploads/";
 
   // Auth endpoints to match your backend routes
   static const String login = "api/auth/login";
@@ -29,7 +29,7 @@ class ApiEndpoints {
   // ─────────────────────────────────────────────────────────────
   // PRODUCTS (Primary & Secondary Marketplace)
   static const String getAvailableProducts = "api/product/available"; // For dashboard
-  static const String getResellableProducts = "api/product/sold";     // For secondary marketplace
+  static const String getSoldProducts = "api/product/sold";     // For secondary marketplace
   static String getProductById(String id) => "api/product/$id";
 
   static String requestProductTransfer(String productId) => "api/product/request-transfer/$productId";
