@@ -8,15 +8,14 @@ part of 'collection_api_model.dart';
 
 CollectionApiModel _$CollectionApiModelFromJson(Map<String, dynamic> json) =>
     CollectionApiModel(
-      id: json['_id'] as String?,
-      title: json['title'] as String?,
-      description: json['description'] as String?,
-      coverImage: json['coverImage'] as String?,
-      creator: json['creator'] == null
-          ? null
-          : CreatorApiModel.fromJson(json['creator'] as Map<String, dynamic>),
-      certified: json['certified'] as bool?,
-      isDeleted: json['isDeleted'] as bool?,
+      id: json['_id'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String,
+      coverImage: json['coverImage'] as String,
+      creator:
+          CreatorApiModel.fromJson(json['creator'] as Map<String, dynamic>),
+      certified: json['certified'] as bool,
+      isDeleted: json['isDeleted'] as bool,
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
