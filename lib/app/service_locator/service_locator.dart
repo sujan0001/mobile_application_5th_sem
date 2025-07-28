@@ -301,6 +301,7 @@ import 'package:batch34_b/features/dashboard/domain/use_case/get_all_collections
 import 'package:batch34_b/features/dashboard/domain/use_case/get_all_creators_usecase.dart';
 import 'package:batch34_b/features/dashboard/domain/use_case/get_available_products_usecase.dart';
 import 'package:batch34_b/features/dashboard/presentation/view_model/dashboard_view_model.dart';
+import 'package:batch34_b/features/navigation/view_model/navigation_cubit.dart';
 
 import 'package:batch34_b/features/s_marketplace/data/data_source/remote_data_source/s_marketplace_remote_data_source.dart';
 import 'package:batch34_b/features/s_marketplace/data/repository/remote_repository/s_marketplace_remote_repository.dart';
@@ -311,6 +312,8 @@ import 'package:batch34_b/features/splash/presentation/view_model/splash_view_mo
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 // Create a global instance of GetIt
 final serviceLocator = GetIt.instance;
@@ -329,6 +332,8 @@ Future<void> initDependencies() async {
   _initSMarketplaceModule();
 }
 
+
+
 // Private helper to register all core services
 Future<void> _initCoreServices() async {
   // Dio and ApiService for networking
@@ -344,6 +349,8 @@ Future<void> _initCoreServices() async {
   serviceLocator.registerLazySingleton(
     () => TokenSharedPrefs(sharedPreferences: serviceLocator<SharedPreferences>()),
   );
+  // Add this line in _initCoreServices() after TokenSharedPrefs registration
+  serviceLocator.registerLazySingleton<NavigationCubit>(() => NavigationCubit());
 }
 
 // Private helper to register all dependencies for the Authentication feature

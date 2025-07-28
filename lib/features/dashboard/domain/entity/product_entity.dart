@@ -5,7 +5,7 @@ class ProductEntity {
   final String name;
   final String description;
   final String image;
-  final int originalPrice;
+  final double originalPrice;
   final CreatorEntity creator;
   final String collectionId;
   final bool onSale;
@@ -33,3 +33,4 @@ class ProductEntity {
     required this.updatedAt,
   });
 }
+

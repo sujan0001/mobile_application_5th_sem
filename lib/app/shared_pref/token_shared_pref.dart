@@ -1,32 +1,71 @@
+// import 'package:batch34_b/core/error/failure.dart';
+// import 'package:dartz/dartz.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+
+// class TokenSharedPrefs {
+//   final SharedPreferences _sharedPreferences;
+
+//   TokenSharedPrefs({required SharedPreferences sharedPreferences})
+//     : _sharedPreferences = sharedPreferences;
+
+//   Future<Either<Failure, void>> saveToken(String token) async {
+//     try {
+//       await _sharedPreferences.setString('token', token);
+//       return const Right(null);
+//     } catch (e) {
+//       return Left(
+//         SharedPreferencesFailure(message: 'Failed to save token: $e'),
+//       );
+//     }
+//   }
+
+//   Future<Either<Failure, String?>> getToken() async {
+//     try {
+//       final token = _sharedPreferences.getString('token');
+//       return Right(token);
+//     } catch (e) {
+//       return Left(
+//         SharedPreferencesFailure(message: 'Failed to retrieve token: $e'),
+//       );
+//     }
+//   }
+// }
 import 'package:batch34_b/core/error/failure.dart';
 import 'package:dartz/dartz.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TokenSharedPrefs {
   final SharedPreferences _sharedPreferences;
+  static const String _tokenKey = 'auth_token';
 
   TokenSharedPrefs({required SharedPreferences sharedPreferences})
-    : _sharedPreferences = sharedPreferences;
+      : _sharedPreferences = sharedPreferences;
 
-  Future<Either<Failure, void>> saveToken(String token) async {
+  Future<Either<Failure, Unit>> saveToken(String token) async {
     try {
-      await _sharedPreferences.setString('token', token);
-      return const Right(null);
+      await _sharedPreferences.setString(_tokenKey, token);
+      return const Right(unit);
     } catch (e) {
-      return Left(
-        SharedPreferencesFailure(message: 'Failed to save token: $e'),
-      );
+      return Left(SharedPreferencesFailure(message: 'Failed to save token: $e'));
     }
   }
 
   Future<Either<Failure, String?>> getToken() async {
     try {
-      final token = _sharedPreferences.getString('token');
+      final token = _sharedPreferences.getString(_tokenKey);
       return Right(token);
     } catch (e) {
-      return Left(
-        SharedPreferencesFailure(message: 'Failed to retrieve token: $e'),
-      );
+      return Left(SharedPreferencesFailure(message: 'Failed to retrieve token: $e'));
+    }
+  }
+
+  Future<Either<Failure, Unit>> deleteToken() async {
+    try {
+      await _sharedPreferences.remove(_tokenKey);
+      return const Right(unit);
+    } catch (e) {
+      return Left(SharedPreferencesFailure(message: 'Failed to delete token: $e'));
     }
   }
 }

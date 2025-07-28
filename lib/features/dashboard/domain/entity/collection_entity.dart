@@ -8,8 +8,8 @@ class CollectionEntity {
   final CreatorEntity creator;
   final bool certified;
   final bool isDeleted;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   const CollectionEntity({
     required this.id,
@@ -19,8 +19,8 @@ class CollectionEntity {
     required this.creator,
     required this.certified,
     required this.isDeleted,
-    required this.createdAt,
-    required this.updatedAt,
+     this.createdAt,
+     this.updatedAt,
   });
 }
 

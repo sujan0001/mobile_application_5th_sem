@@ -21,5 +21,5 @@ Map<String, dynamic> _$CreatorApiModelToJson(CreatorApiModel instance) =>
       'firstName': instance.firstName,
       'lastName': instance.lastName,
       'email': instance.email,
-      'createdAt': instance.createdAt.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
     };
