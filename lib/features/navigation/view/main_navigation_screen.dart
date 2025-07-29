@@ -67,6 +67,8 @@ import 'package:batch34_b/app/service_locator/service_locator.dart';
 import 'package:batch34_b/features/dashboard/presentation/view/dashboard_page_view.dart';
 import 'package:batch34_b/features/dashboard/presentation/view_model/dashboard_view_model.dart';
 import 'package:batch34_b/features/navigation/view_model/navigation_cubit.dart';
+import 'package:batch34_b/features/owned_products/presentation/view/my_owned_products_view.dart';
+import 'package:batch34_b/features/owned_products/presentation/view_model/owned_products_bloc.dart';
 import 'package:batch34_b/features/permission_creator/presentation/view/permission_creator_view.dart';
 import 'package:batch34_b/features/permission_creator/presentation/view_model/permission_creator_view_model.dart';
 import 'package:batch34_b/features/s_marketplace/presentation/view/s_marketplace_view.dart';
@@ -91,6 +93,11 @@ class MainNavigationScreen extends StatelessWidget {
       BlocProvider.value(
         value: serviceLocator<SMarketplaceViewModel>(),
         child: const SMarketplaceView(),
+      ),
+      // My owned products screen with its view model
+      BlocProvider(
+        create: (_) => serviceLocator<OwnedProductsBloc>(),
+        child: const MyOwnedProductsView(),
       ),
       // Permission Creator Screen with its ViewModel
       ChangeNotifierProvider.value(
@@ -124,6 +131,10 @@ class MainNavigationScreen extends StatelessWidget {
                 BottomNavigationBarItem(
                   icon: Icon(Icons.store),
                   label: 'Marketplace',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.inventory_2),
+                  label: 'Owned Products',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.admin_panel_settings),

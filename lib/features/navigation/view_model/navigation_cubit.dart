@@ -11,4 +11,5 @@ class NavigationCubit extends Cubit<int> {
   void goToDashboard() => emit(0);
   void goToMarketplace() => emit(1);
   void goToPermissions() => emit(2);
+  void goToOwnedProducts() => emit(3);
 }
