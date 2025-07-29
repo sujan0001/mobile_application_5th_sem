@@ -93,7 +93,7 @@ import 'package:batch34_b/features/auth/presentation/view/signup_page_view.dart'
 import 'package:batch34_b/features/auth/presentation/view_model/login_view_model/login_event.dart';
 import 'package:batch34_b/features/auth/presentation/view_model/login_view_model/login_state.dart';
 import 'package:batch34_b/features/auth/presentation/view_model/register_view_model/register_view_model.dart';
-import 'package:batch34_b/features/navigation/pages/main_navigation_screen.dart';
+import 'package:batch34_b/features/navigation/view/main_navigation_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

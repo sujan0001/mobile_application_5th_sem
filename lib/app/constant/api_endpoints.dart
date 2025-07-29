@@ -43,7 +43,7 @@ class ApiEndpoints {
   // ─────────────────────────────────────────────────────────────
   // PERMISSIONS / TRANSFER REQUESTS
 
-  static const String getMyIncomingTransferRequests = "api/product/incoming-transfers";
+  static const String getMYIncomingTransferRequests = "api/product/incoming-transfers";
   static String respondToTransferRequest(String requestId) => "api/product/respond-transfer/$requestId";
 
   // ─────────────────────────────────────────────────────────────
