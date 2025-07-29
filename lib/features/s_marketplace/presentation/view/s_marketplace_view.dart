@@ -2,6 +2,7 @@
 // import 'package:batch34_b/features/s_marketplace/presentation/view_model/s_marketplace_event.dart';
 // import 'package:batch34_b/features/s_marketplace/presentation/view_model/s_marketplace_state.dart';
 // import 'package:batch34_b/features/s_marketplace/presentation/view_model/s_marketplace_view_model.dart';
+// import 'package:batch34_b/core/utils/backend_image.dart'; // Add this import
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -136,14 +137,24 @@
 //                   height: 80,
 //                   color: Colors.grey.shade700,
 //                   child: product.image.isNotEmpty
-//                       ? Image.network(
-//                           'http://localhost:5050/${product.image}',
-//                           fit: BoxFit.cover,
-//                           errorBuilder: (context, error, stackTrace) {
-//                             return const Icon(
-//                               Icons.image_not_supported,
-//                               color: Colors.grey,
-//                               size: 40,
+//                       ? Builder(
+//                           builder: (context) {
+//                             // Debug prints
+//                             String imageUrl = getBackendImageUrl(product.image);
+//                             print('Product image path: ${product.image}');
+//                             print('Final URL: $imageUrl');
+                            
+//                             return Image.network(
+//                               imageUrl, // Use utility function instead of hardcoded URL
+//                               fit: BoxFit.cover,
+//                               errorBuilder: (context, error, stackTrace) {
+//                                 print('Image loading error: $error');
+//                                 return const Icon(
+//                                   Icons.image_not_supported,
+//                                   color: Colors.grey,
+//                                   size: 40,
+//                                 );
+//                               },
 //                             );
 //                           },
 //                         )
@@ -258,11 +269,15 @@
 //   }
 // }
 
+import 'package:batch34_b/app/service_locator/service_locator.dart';
 import 'package:batch34_b/features/s_marketplace/domain/entity/s_marketplace_entity.dart';
+import 'package:batch34_b/features/s_marketplace/presentation/cubit/request_transfer_state.dart';
 import 'package:batch34_b/features/s_marketplace/presentation/view_model/s_marketplace_event.dart';
 import 'package:batch34_b/features/s_marketplace/presentation/view_model/s_marketplace_state.dart';
 import 'package:batch34_b/features/s_marketplace/presentation/view_model/s_marketplace_view_model.dart';
-import 'package:batch34_b/core/utils/backend_image.dart'; // Add this import
+import 'package:batch34_b/features/s_marketplace/presentation/cubit/request_transfer_cubit.dart';
+ // Update path as needed
+import 'package:batch34_b/core/utils/backend_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -369,162 +384,284 @@ class _SMarketplaceViewState extends State<SMarketplaceView> {
   }
 
   Widget _buildProductCard(BuildContext context, ProductEntity product) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 4,
-      color: Colors.grey.shade800,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
-        onTap: () {
-          context.read<SMarketplaceViewModel>().add(
-                NavigateToProductDetailsEvent(
-                  context: context,
-                  productId: product.id,
+    return BlocProvider(
+      create: (context) => serviceLocator<RequestTransferCubit>(),
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 16),
+        elevation: 4,
+        color: Colors.grey.shade800,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: InkWell(
+          onTap: () {
+            context.read<SMarketplaceViewModel>().add(
+                  NavigateToProductDetailsEvent(
+                    context: context,
+                    productId: product.id,
+                  ),
+                );
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Product Image
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    color: Colors.grey.shade700,
+                    child: product.image.isNotEmpty
+                        ? Builder(
+                            builder: (context) {
+                              // Debug prints
+                              String imageUrl = getBackendImageUrl(product.image);
+                              print('Product image path: ${product.image}');
+                              print('Final URL: $imageUrl');
+                              
+                              return Image.network(
+                                imageUrl, // Use utility function instead of hardcoded URL
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  print('Image loading error: $error');
+                                  return const Icon(
+                                    Icons.image_not_supported,
+                                    color: Colors.grey,
+                                    size: 40,
+                                  );
+                                },
+                              );
+                            },
+                          )
+                        : const Icon(
+                            Icons.image,
+                            color: Colors.grey,
+                            size: 40,
+                          ),
+                  ),
                 ),
-              );
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Product Image
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  color: Colors.grey.shade700,
-                  child: product.image.isNotEmpty
-                      ? Builder(
-                          builder: (context) {
-                            // Debug prints
-                            String imageUrl = getBackendImageUrl(product.image);
-                            print('Product image path: ${product.image}');
-                            print('Final URL: $imageUrl');
-                            
-                            return Image.network(
-                              imageUrl, // Use utility function instead of hardcoded URL
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                print('Image loading error: $error');
-                                return const Icon(
-                                  Icons.image_not_supported,
-                                  color: Colors.grey,
-                                  size: 40,
-                                );
-                              },
-                            );
-                          },
-                        )
-                      : const Icon(
-                          Icons.image,
-                          color: Colors.grey,
-                          size: 40,
-                        ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              
-              // Product Details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    if (product.description != null)
+                const SizedBox(width: 16),
+                
+                // Product Details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Text(
-                        product.description!,
+                        product.name,
                         style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    const SizedBox(height: 8),
-                    
-                    // Price Row
-                    Row(
-                      children: [
+                      const SizedBox(height: 4),
+                      if (product.description != null)
                         Text(
-                          'Original: \$${product.originalPrice.toStringAsFixed(2)}',
+                          product.description!,
                           style: const TextStyle(
-                            color: Colors.white54,
-                            fontSize: 12,
-                            decoration: TextDecoration.lineThrough,
+                            color: Colors.white70,
+                            fontSize: 14,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(width: 8),
-                        if (product.resalePrice != null)
+                      const SizedBox(height: 8),
+                      
+                      // Price Row
+                      Row(
+                        children: [
                           Text(
-                            '\$${product.resalePrice!.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    
-                    // Status and Owner
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: product.onSale ? Colors.green : Colors.orange,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            product.onSale ? 'On Sale' : 'Sold',
+                            'Original: \$${product.originalPrice.toStringAsFixed(2)}',
                             style: const TextStyle(
-                              color: Colors.white,
+                              color: Colors.white54,
                               fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.lineThrough,
                             ),
                           ),
-                        ),
-                        const Spacer(),
-                        if (product.certified)
-                          const Icon(
-                            Icons.verified,
-                            color: Colors.blue,
-                            size: 20,
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Owner: ${product.owner?.firstName ?? 'Unknown'} ${product.owner?.lastName ?? ''}',
-                      style: const TextStyle(
-                        color: Colors.white60,
-                        fontSize: 12,
+                          const SizedBox(width: 8),
+                          if (product.resalePrice != null)
+                            Text(
+                              '\$${product.resalePrice!.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      
+                      // Status and Owner
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: product.onSale ? Colors.green : Colors.orange,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              product.onSale ? 'On Sale' : 'Sold',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          if (product.certified)
+                            const Icon(
+                              Icons.verified,
+                              color: Colors.blue,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Owner: ${product.owner?.firstName ?? 'Unknown'} ${product.owner?.lastName ?? ''}',
+                        style: const TextStyle(
+                          color: Colors.white60,
+                          fontSize: 12,
+                        ),
+                      ),
+                      
+                      // Request Transfer Button - NEW
+                      const SizedBox(height: 12),
+                      _buildRequestTransferButton(context, product),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRequestTransferButton(BuildContext context, ProductEntity product) {
+    return BlocConsumer<RequestTransferCubit, RequestTransferState>(
+      listener: (context, state) {
+        // Handle success and error states
+        if (state.runtimeType.toString().contains('Success')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Transfer request sent successfully!'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        } else if (state.runtimeType.toString().contains('Failure') || 
+                   state.runtimeType.toString().contains('Error')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to send transfer request. Please try again.'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state.runtimeType.toString().contains('Loading');
+        
+        return SizedBox(
+          width: double.infinity,
+          height: 36,
+          child: ElevatedButton.icon(
+            onPressed: isLoading ? null : () => _requestTransfer(context, product),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              elevation: 2,
+            ),
+            icon: isLoading
+                ? const SizedBox(
+                    height: 16,
+                    width: 16,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Icon(Icons.swap_horiz, size: 18),
+            label: Text(
+              isLoading ? 'Requesting...' : 'Request Transfer',
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _requestTransfer(BuildContext context, ProductEntity product) {
+    final cubit = context.read<RequestTransferCubit>();
+    
+    // Validate product ID
+    if (product.id.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid product ID'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Show confirmation dialog (optional)
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey.shade800,
+          title: const Text(
+            'Request Transfer',
+            style: TextStyle(color: Colors.white),
+          ),
+          content: Text(
+            'Do you want to request transfer for "${product.name}"?',
+            style: const TextStyle(color: Colors.white70),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Trigger the request transfer
+                cubit.requestProductTransfer(product.id);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+              child: const Text(
+                'Confirm',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
