@@ -231,6 +231,13 @@ import 'package:batch34_b/features/dashboard/domain/use_case/get_all_creators_us
 import 'package:batch34_b/features/dashboard/domain/use_case/get_available_products_usecase.dart';
 import 'package:batch34_b/features/dashboard/presentation/view_model/dashboard_view_model.dart';
 import 'package:batch34_b/features/navigation/view_model/navigation_cubit.dart';
+import 'package:batch34_b/features/permission_creator/data/data_source/remote_datasource/transfer_request_remote_datasource_impl.dart';
+import 'package:batch34_b/features/permission_creator/data/data_source/transfer_request_remote_datasource.dart';
+import 'package:batch34_b/features/permission_creator/data/repository/remote_repository/transfer_request_repository_impl.dart';
+import 'package:batch34_b/features/permission_creator/domain/repository/transfer_request_repository.dart';
+import 'package:batch34_b/features/permission_creator/domain/use_case/et_incoming_transfer_requests.dart';
+import 'package:batch34_b/features/permission_creator/domain/use_case/respond_to_transfer_request.dart';
+import 'package:batch34_b/features/permission_creator/presentation/view_model/permission_creator_view_model.dart';
 import 'package:batch34_b/features/s_marketplace/data/data_source/remote_data_source/request_transfer_remote_datasource_impl.dart';
 
 import 'package:batch34_b/features/s_marketplace/data/data_source/remote_data_source/s_marketplace_remote_data_source.dart';
@@ -266,6 +273,8 @@ Future<void> initDependencies() async {
   _initSMarketplaceModule();
   //for request transfer functionality
   _initRequestTransferModule();
+  //for get permission functionality
+  _initPermissionCreatorModule();
 }
 
 // Private helper to register all core services
@@ -447,6 +456,46 @@ void _initRequestTransferModule() {
   serviceLocator.registerFactory<RequestTransferCubit>(
     () => RequestTransferCubit(
       requestProductTransferUseCase: serviceLocator<RequestProductTransferUseCase>(),
+    ),
+  );
+}
+
+// service locator for permission permission_creator===========================================
+
+void _initPermissionCreatorModule() {
+  // Data Source - using your existing Dio and TokenSharedPrefs implementation
+  serviceLocator.registerFactory<TransferRequestRemoteDataSource>(
+    () => TransferRequestRemoteDataSourceImpl(
+      dio: serviceLocator<Dio>(),
+      tokenSharedPrefs: serviceLocator<TokenSharedPrefs>(),
+    ),
+  );
+
+  // Repository
+  serviceLocator.registerFactory<TransferRequestRepository>(
+    () => TransferRequestRepositoryImpl(
+      remoteDataSource: serviceLocator<TransferRequestRemoteDataSource>(),
+    ),
+  );
+
+  // Use cases
+  serviceLocator.registerFactory<GetIncomingTransferRequests>(
+    () => GetIncomingTransferRequests(
+      repository: serviceLocator<TransferRequestRepository>(),
+    ),
+  );
+
+  serviceLocator.registerFactory<RespondToTransferRequest>(
+    () => RespondToTransferRequest(
+      repository: serviceLocator<TransferRequestRepository>(),
+    ),
+  );
+
+  // ViewModel
+  serviceLocator.registerFactory<PermissionCreatorViewModel>(
+    () => PermissionCreatorViewModel(
+      getIncomingTransferRequests: serviceLocator<GetIncomingTransferRequests>(),
+      respondToTransferRequest: serviceLocator<RespondToTransferRequest>(),
     ),
   );
 }
