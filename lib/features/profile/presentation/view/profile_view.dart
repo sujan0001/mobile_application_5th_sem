@@ -41,7 +41,7 @@ class ProfileView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      // User Name
+                      // User Name (Static)
                       const Text(
                         'John Doe',
                         style: TextStyle(
@@ -50,7 +50,7 @@ class ProfileView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      // User Role
+                      // User Role (Static)
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -227,21 +227,28 @@ class ProfileView extends StatelessWidget {
   void _showLogoutDialog(BuildContext context, ProfileViewModel viewModel) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: const Text('Confirm Logout'),
           content: const Text('Are you sure you want to logout?'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                viewModel.logout(context);
+              onPressed: () async {
+                // Close dialog first
+                Navigator.of(dialogContext).pop();
+                
+                // Small delay to ensure dialog is closed
+                await Future.delayed(const Duration(milliseconds: 100));
+                
+                // Then call logout with the original context (not dialog context)
+                await viewModel.logout(context);
               },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red,
