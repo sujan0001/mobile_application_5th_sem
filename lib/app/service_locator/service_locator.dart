@@ -40,6 +40,7 @@ import 'package:batch34_b/features/product_details/data/repository/remote_reposi
 import 'package:batch34_b/features/product_details/domain/repository/product_detail_repository.dart';
 import 'package:batch34_b/features/product_details/domain/use_case/get_product_by_id_use_case.dart';
 import 'package:batch34_b/features/product_details/presentation/view_model/product_detail_view_model.dart';
+import 'package:batch34_b/features/profile/presentation/view_model/profile_view_model.dart';
 import 'package:batch34_b/features/s_marketplace/data/data_source/remote_data_source/request_transfer_remote_datasource_impl.dart';
 
 import 'package:batch34_b/features/s_marketplace/data/data_source/remote_data_source/s_marketplace_remote_data_source.dart';
@@ -81,6 +82,8 @@ Future<void> initDependencies() async {
   _initOwnedProductsModule();
   //for get product by id
   _initProductDetailModule();
+  //for profile
+  _initProfileModule();
 
 }
 
@@ -372,6 +375,16 @@ void _initProductDetailModule() {
   serviceLocator.registerFactory<ProductDetailViewModel>(
     () => ProductDetailViewModel(
       getProductByIdUseCase: serviceLocator<GetProductByIdUseCase>(),
+    ),
+  );
+}
+
+// ===============for profile================================================
+void _initProfileModule() {
+  // ViewModel
+  serviceLocator.registerFactory<ProfileViewModel>(
+    () => ProfileViewModel(
+      tokenSharedPrefs: serviceLocator<TokenSharedPrefs>(),
     ),
   );
 }
