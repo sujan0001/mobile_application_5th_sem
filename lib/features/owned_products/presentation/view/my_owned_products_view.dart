@@ -1,15 +1,14 @@
 import 'package:batch34_b/app/constant/api_endpoints.dart';
 import 'package:batch34_b/app/service_locator/service_locator.dart';
+import 'package:batch34_b/core/utils/backend_image.dart';
 import 'package:batch34_b/features/owned_products/presentation/view_model/owned_products_event.dart';
 import 'package:batch34_b/features/owned_products/presentation/view_model/owned_products_state.dart';
 import 'package:batch34_b/features/owned_products/presentation/view_model/owned_products_bloc.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
-
 import '../../domain/entity/owned_product_entity.dart';
-
 
 class MyOwnedProductsView extends StatelessWidget {
   const MyOwnedProductsView({Key? key}) : super(key: key);
@@ -139,6 +138,9 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the properly formatted image URL
+    final String imageUrl = getBackendImageUrl(product.image);
+    
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -156,25 +158,35 @@ class ProductCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.grey[300],
               ),
-              child: Image.network(
-                '${ApiEndpoints.imageUrl}${product.image}',
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Center(
-                    child: Icon(
-                      Icons.image_not_supported,
-                      size: 50,
-                      color: Colors.grey,
+              child: imageUrl.isNotEmpty
+                  ? Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        print('Image loading error: $error');
+                        print('Failed URL: $imageUrl');
+                        return const Center(
+                          child: Icon(
+                            Icons.image_not_supported,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        );
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    )
+                  : const Center(
+                      child: Icon(
+                        Icons.image_not_supported,
+                        size: 50,
+                        color: Colors.grey,
+                      ),
                     ),
-                  );
-                },
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              ),
             ),
           ),
           

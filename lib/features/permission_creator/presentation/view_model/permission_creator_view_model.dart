@@ -1,5 +1,5 @@
 import 'package:batch34_b/features/permission_creator/domain/entity/transfer_request_entity.dart';
-import 'package:batch34_b/features/permission_creator/domain/use_case/et_incoming_transfer_requests.dart';
+import 'package:batch34_b/features/permission_creator/domain/use_case/get_incoming_transfer_requests.dart';
 import 'package:batch34_b/features/permission_creator/domain/use_case/respond_to_transfer_request.dart';
 import 'package:flutter/foundation.dart';
 import '../../../../core/usecases/usecase.dart';

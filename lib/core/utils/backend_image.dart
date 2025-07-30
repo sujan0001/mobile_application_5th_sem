@@ -1,16 +1,3 @@
-
-
-// import 'package:batch34_b/app/constant/api_endpoints.dart';
-
-// String getBackendImageUrl(String? filepath) {
-//   if (filepath == null || filepath.isEmpty) {
-//     return "";
-//   }
-//   // The filepath from the DB already has "uploads/", so we just combine it with the imageUrl base.
-//   final String cleanPath = filepath.replaceAll(r'\', '/');
-//   return '${ApiEndpoints.imageUrl}$cleanPath';
-// }
-
 import 'package:batch34_b/app/constant/api_endpoints.dart';
 
 String getBackendImageUrl(String? filepath) {
