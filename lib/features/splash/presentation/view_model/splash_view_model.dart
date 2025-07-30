@@ -15,7 +15,7 @@ class SplashViewModel extends Bloc<SplashEvent, SplashState> {
     Emitter<SplashState> emit,
   ) async {
     // Artificial delay to ensure the splash animation is visible
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
 
     final tokenResult = await _tokenSharedPrefs.getToken();
 
