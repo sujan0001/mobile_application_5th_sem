@@ -31,9 +31,15 @@ import 'package:batch34_b/features/permission_creator/data/data_source/remote_da
 import 'package:batch34_b/features/permission_creator/data/data_source/transfer_request_remote_datasource.dart';
 import 'package:batch34_b/features/permission_creator/data/repository/remote_repository/transfer_request_repository_impl.dart';
 import 'package:batch34_b/features/permission_creator/domain/repository/transfer_request_repository.dart';
-import 'package:batch34_b/features/permission_creator/domain/use_case/et_incoming_transfer_requests.dart';
+import 'package:batch34_b/features/permission_creator/domain/use_case/get_incoming_transfer_requests.dart';
 import 'package:batch34_b/features/permission_creator/domain/use_case/respond_to_transfer_request.dart';
 import 'package:batch34_b/features/permission_creator/presentation/view_model/permission_creator_view_model.dart';
+import 'package:batch34_b/features/product_details/data/data_source/product_detail_remote_data_source.dart';
+import 'package:batch34_b/features/product_details/data/data_source/remote_datasource/product_detail_remote_data_source_impl.dart';
+import 'package:batch34_b/features/product_details/data/repository/remote_repository/product_detail_remote_repository.dart';
+import 'package:batch34_b/features/product_details/domain/repository/product_detail_repository.dart';
+import 'package:batch34_b/features/product_details/domain/use_case/get_product_by_id_use_case.dart';
+import 'package:batch34_b/features/product_details/presentation/view_model/product_detail_view_model.dart';
 import 'package:batch34_b/features/s_marketplace/data/data_source/remote_data_source/request_transfer_remote_datasource_impl.dart';
 
 import 'package:batch34_b/features/s_marketplace/data/data_source/remote_data_source/s_marketplace_remote_data_source.dart';
@@ -73,6 +79,8 @@ Future<void> initDependencies() async {
   _initPermissionCreatorModule();
   //for my owned products
   _initOwnedProductsModule();
+  //for get product by id
+  _initProductDetailModule();
 
 }
 
@@ -331,6 +339,39 @@ void _initOwnedProductsModule() {
     () => OwnedProductsBloc(
       getMyOwnedProductsUseCase: serviceLocator<GetMyOwnedProductsUseCase>(),
       resellProductUseCase: serviceLocator<ResellProductUseCase>(),
+    ),
+  );
+}
+
+// get product by id service locator=======================================================
+
+void _initProductDetailModule() {
+  // Data Source - using Dio and TokenSharedPrefs directly like your other modules
+  serviceLocator.registerFactory<ProductDetailRemoteDataSource>(
+    () => ProductDetailRemoteDataSourceImpl(
+      dio: serviceLocator<Dio>(),
+      tokenSharedPrefs: serviceLocator<TokenSharedPrefs>(),
+    ),
+  );
+
+  // Repository
+  serviceLocator.registerFactory<ProductDetailRepository>(
+    () => ProductDetailRemoteRepository(
+      remoteDataSource: serviceLocator<ProductDetailRemoteDataSource>(),
+    ),
+  );
+
+  // Use Case
+  serviceLocator.registerFactory<GetProductByIdUseCase>(
+    () => GetProductByIdUseCase(
+      repository: serviceLocator<ProductDetailRepository>(),
+    ),
+  );
+
+  // ViewModel
+  serviceLocator.registerFactory<ProductDetailViewModel>(
+    () => ProductDetailViewModel(
+      getProductByIdUseCase: serviceLocator<GetProductByIdUseCase>(),
     ),
   );
 }
