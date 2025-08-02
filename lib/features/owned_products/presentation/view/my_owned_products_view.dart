@@ -4,6 +4,7 @@
 // import 'package:batch34_b/features/owned_products/presentation/view_model/owned_products_event.dart';
 // import 'package:batch34_b/features/owned_products/presentation/view_model/owned_products_state.dart';
 // import 'package:batch34_b/features/owned_products/presentation/view_model/owned_products_bloc.dart';
+// import 'package:batch34_b/features/product_details/presentation/view/product_detail_view.dart';
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,10 +18,10 @@
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: const Text('My Owned Products'),
-//         backgroundColor: Colors.white,
-//         elevation: 1,
-//         foregroundColor: Colors.black,
+//         title: const Text('My Owned Products',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+//         backgroundColor: Colors.grey.shade900,
+//         elevation: 0,
+        
 //       ),
 //       body: BlocProvider(
 //         create: (context) => serviceLocator<OwnedProductsBloc>()
@@ -268,43 +269,53 @@
                   
 //                   const Spacer(),
                   
-//                   // Action Buttons
-//                   Row(
+//                   // Action Buttons - Updated to use Row with 3 buttons
+//                   Column(
 //                     children: [
-//                       Expanded(
-//                         child: ElevatedButton(
-//                           onPressed: product.onSale == true 
-//                             ? null 
-//                             : () => _showResellDialog(context, product.id),
-//                           style: ElevatedButton.styleFrom(
-//                             backgroundColor: Colors.blue,
-//                             foregroundColor: Colors.white,
-//                             shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(8),
+//                       // First Row - Resell and View Details buttons
+//                       Row(
+//                         children: [
+//                           Expanded(
+//                             child: ElevatedButton.icon(
+//                               onPressed: product.onSale == true 
+//                                 ? null 
+//                                 : () => _showResellDialog(context, product.id),
+//                               style: ElevatedButton.styleFrom(
+//                                 backgroundColor: product.onSale == true ? Colors.grey : Colors.blue,
+//                                 foregroundColor: Colors.white,
+//                                 shape: RoundedRectangleBorder(
+//                                   borderRadius: BorderRadius.circular(8),
+//                                 ),
+//                               ),
+//                               icon: Icon(
+//                                 product.onSale == true ? Icons.check : Icons.sell,
+//                                 size: 16,
+//                               ),
+//                               label: Text(
+//                                 product.onSale == true ? 'Listed' : 'Resell',
+//                                 style: const TextStyle(fontSize: 12),
+//                               ),
 //                             ),
 //                           ),
-//                           child: Text(
-//                             product.onSale == true ? 'Listed for Sale' : 'Resell',
-//                             style: const TextStyle(fontSize: 12),
-//                           ),
-//                         ),
-//                       ),
-//                       const SizedBox(width: 8),
-//                       Expanded(
-//                         child: ElevatedButton(
-//                           onPressed: () => _navigateToProductDetails(context, product.id),
-//                           style: ElevatedButton.styleFrom(
-//                             backgroundColor: Colors.grey[800],
-//                             foregroundColor: Colors.white,
-//                             shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(8),
+//                           const SizedBox(width: 8),
+//                           Expanded(
+//                             child: OutlinedButton.icon(
+//                               onPressed: () => _navigateToProductDetails(context, product.id),
+//                               style: OutlinedButton.styleFrom(
+//                                 foregroundColor: Colors.orange[700],
+//                                 side: BorderSide(color: Colors.orange[300]!),
+//                                 shape: RoundedRectangleBorder(
+//                                   borderRadius: BorderRadius.circular(8),
+//                                 ),
+//                               ),
+//                               icon: const Icon(Icons.visibility, size: 16),
+//                               label: const Text(
+//                                 'Details',
+//                                 style: TextStyle(fontSize: 12),
+//                               ),
 //                             ),
 //                           ),
-//                           child: const Text(
-//                             'View Details',
-//                             style: TextStyle(fontSize: 12),
-//                           ),
-//                         ),
+//                         ],
 //                       ),
 //                     ],
 //                   ),
@@ -370,16 +381,28 @@
 //   }
 
 //   void _navigateToProductDetails(BuildContext context, String productId) {
-//     // Navigate to product details page
-//     // You'll need to implement this based on your routing setup
-//     Navigator.pushNamed(
-//       context, 
-//       '/product-details',
-//       arguments: {'productId': productId, 'owned': true},
+//     // Validate product ID
+//     if (productId.isEmpty) {
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         const SnackBar(
+//           content: Text('Invalid product ID'),
+//           backgroundColor: Colors.red,
+//         ),
+//       );
+//       return;
+//     }
+
+//     // Navigate to product details page using MaterialPageRoute
+//     Navigator.of(context).push(
+//       MaterialPageRoute(
+//         builder: (context) => ProductDetailView(
+//           productId: productId,
+//           isOwned: true, // Set to true since this is from owned products list
+//         ),
+//       ),
 //     );
 //   }
 // }
-
 import 'package:batch34_b/app/constant/api_endpoints.dart';
 import 'package:batch34_b/app/service_locator/service_locator.dart';
 import 'package:batch34_b/core/utils/backend_image.dart';
@@ -400,11 +423,25 @@ class MyOwnedProductsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Owned Products'),
-        backgroundColor: Colors.white,
-        elevation: 1,
-        foregroundColor: Colors.black,
+        title: const Text(
+          'My Owned Products',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.grey.shade900,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.white),
+            onPressed: () {
+              // TODO: Implement search functionality
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Search functionality coming soon!')),
+              );
+            },
+          ),
+        ],
       ),
+      backgroundColor: Colors.blue[50],
       body: BlocProvider(
         create: (context) => serviceLocator<OwnedProductsBloc>()
           ..add(GetMyOwnedProductsEvent()),
@@ -426,6 +463,7 @@ class MyOwnedProductsBody extends StatelessWidget {
             SnackBar(
               content: Text(state.message),
               backgroundColor: Colors.green,
+              duration: const Duration(seconds: 3),
             ),
           );
         } else if (state is ResellProductError) {
@@ -433,6 +471,7 @@ class MyOwnedProductsBody extends StatelessWidget {
             SnackBar(
               content: Text(state.message),
               backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
             ),
           );
         } else if (state is OwnedProductsError) {
@@ -440,6 +479,7 @@ class MyOwnedProductsBody extends StatelessWidget {
             SnackBar(
               content: Text(state.message),
               backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
             ),
           );
         }
@@ -457,7 +497,7 @@ class MyOwnedProductsBody extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.inventory_2_outlined,
-                    size: 64,
+                    size: 80,
                     color: Colors.grey,
                   ),
                   SizedBox(height: 16),
@@ -466,7 +506,13 @@ class MyOwnedProductsBody extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.grey,
+                      fontWeight: FontWeight.w500,
                     ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Your purchased items will appear here',
+                    style: TextStyle(color: Colors.grey),
                   ),
                 ],
               ),
@@ -480,15 +526,15 @@ class MyOwnedProductsBody extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: 0.85,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
+                  crossAxisCount: 2, // 2 columns like s_marketplace
+                  childAspectRatio: 0.50, // Same aspect ratio as s_marketplace
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
                 ),
                 itemCount: state.products.length,
                 itemBuilder: (context, index) {
                   final product = state.products[index];
-                  return ProductCard(product: product);
+                  return _buildProductCard(context, product);
                 },
               ),
             ),
@@ -512,15 +558,8 @@ class MyOwnedProductsBody extends StatelessWidget {
       },
     );
   }
-}
 
-class ProductCard extends StatelessWidget {
-  final OwnedProductEntity product;
-
-  const ProductCard({Key? key, required this.product}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildProductCard(BuildContext context, OwnedProductEntity product) {
     // Get the properly formatted image URL
     final String imageUrl = getBackendImageUrl(product.image);
     
@@ -529,183 +568,236 @@ class ProductCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          // Product Image
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: Container(
-              height: 200,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-              ),
-              child: imageUrl.isNotEmpty
-                  ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        print('Image loading error: $error');
-                        print('Failed URL: $imageUrl');
-                        return const Center(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Product Image
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                child: Container(
+                  height: 140,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                  ),
+                  child: imageUrl.isNotEmpty
+                      ? Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            print('Image loading error: $error');
+                            print('Failed URL: $imageUrl');
+                            return const Center(
+                              child: Icon(
+                                Icons.image_not_supported,
+                                size: 50,
+                                color: Colors.grey,
+                              ),
+                            );
+                          },
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                        )
+                      : const Center(
                           child: Icon(
                             Icons.image_not_supported,
                             size: 50,
                             color: Colors.grey,
                           ),
-                        );
-                      },
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                    )
-                  : const Center(
-                      child: Icon(
-                        Icons.image_not_supported,
-                        size: 50,
-                        color: Colors.grey,
+                        ),
+                ),
+              ),
+              
+              // Product Details
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Product Name
+                      Text(
+                        product.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-            ),
-          ),
-          
-          // Product Details
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  
-                  if (product.description != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      product.description!,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                  
-                  const SizedBox(height: 8),
-                  Text(
-                    'Collection: ${product.collection.title}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 8),
-                  Text(
-                    'Rs. ${product.originalPrice.toString()}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
-                  
-                  Text(
-                    'By: ${product.creator.firstName} ${product.creator.lastName}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                  
-                  if (product.onSale == true && product.resalePrice != null) ...[
-                    const SizedBox(height: 4),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.orange[100],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        'On Sale: Rs. ${product.resalePrice!.toString()}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.orange[800],
-                          fontWeight: FontWeight.w500,
+                      
+                      const SizedBox(height: 4),
+                      
+                      // Description (if available)
+                      if (product.description != null && product.description!.isNotEmpty) ...[
+                        Text(
+                          product.description!,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 6),
+                      ],
+                      
+                      // Collection Info
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blue[100],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          product.collection.title,
+                          style: TextStyle(
+                            color: Colors.blue[800],
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    ),
-                  ],
-                  
-                  const Spacer(),
-                  
-                  // Action Buttons - Updated to use Row with 3 buttons
-                  Column(
-                    children: [
-                      // First Row - Resell and View Details buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: product.onSale == true 
-                                ? null 
-                                : () => _showResellDialog(context, product.id),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: product.onSale == true ? Colors.grey : Colors.blue,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              icon: Icon(
-                                product.onSale == true ? Icons.check : Icons.sell,
-                                size: 16,
-                              ),
-                              label: Text(
-                                product.onSale == true ? 'Listed' : 'Resell',
-                                style: const TextStyle(fontSize: 12),
-                              ),
+                      
+                      const SizedBox(height: 6),
+                      
+                      // Sale Status Badge (if on sale)
+                      if (product.onSale == true && product.resalePrice != null) ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.orange[100],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            'On Sale',
+                            style: TextStyle(
+                              color: Colors.orange[800],
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () => _navigateToProductDetails(context, product.id),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.orange[700],
-                                side: BorderSide(color: Colors.orange[300]!),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              icon: const Icon(Icons.visibility, size: 16),
-                              label: const Text(
-                                'Details',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
+                        const SizedBox(height: 6),
+                      ],
+                      
+                      // Original Price
+                      Text(
+                        'Rs. ${product.originalPrice.toString()}',
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      
+                      // Resale Price (if on sale)
+                      if (product.onSale == true && product.resalePrice != null)
+                        Text(
+                          'Sale: Rs. ${product.resalePrice!.toString()}',
+                          style: TextStyle(
+                            color: Colors.orange[700],
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      
+                      const SizedBox(height: 4),
+                      
+                      // Creator Info
+                      Text(
+                        'By: ${product.creator.firstName} ${product.creator.lastName}',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 10,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      
+                      const Spacer(),
+                      
+                      // Resell Button
+                      _buildResellButton(context, product),
                     ],
                   ),
-                ],
+                ),
+              ),
+            ],
+          ),
+          
+          // Arrow button for navigation to details (positioned like in s_marketplace)
+          Positioned(
+            top: 8,
+            right: 8,
+            child: GestureDetector(
+              onTap: () => _navigateToProductDetails(context, product.id),
+              child: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 2,
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.arrow_forward,
+                  size: 12,
+                  color: Colors.black54,
+                ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildResellButton(BuildContext context, OwnedProductEntity product) {
+    return SizedBox(
+      width: double.infinity,
+      height: 32,
+      child: ElevatedButton.icon(
+        onPressed: product.onSale == true 
+            ? null 
+            : () => _showResellDialog(context, product.id),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: product.onSale == true ? Colors.grey : Colors.blue[600],
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          elevation: 2,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+        ),
+        icon: Icon(
+          product.onSale == true ? Icons.check : Icons.sell,
+          size: 14,
+        ),
+        label: Text(
+          product.onSale == true ? 'Listed' : 'Resell',
+          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+        ),
       ),
     );
   }
@@ -731,7 +823,10 @@ class ProductCard extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -751,7 +846,7 @@ class ProductCard extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
+                backgroundColor: Colors.green[600],
                 foregroundColor: Colors.white,
               ),
               child: const Text('Confirm'),

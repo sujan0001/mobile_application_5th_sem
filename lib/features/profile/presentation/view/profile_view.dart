@@ -9,9 +9,9 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
+        title: const Text('Profile',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.grey.shade900,
+        
         elevation: 0,
       ),
       body: Consumer<ProfileViewModel>(
@@ -33,7 +33,7 @@ class ProfileView extends StatelessWidget {
                       // Profile Picture
                       CircleAvatar(
                         radius: 50,
-                        backgroundColor: Theme.of(context).primaryColor,
+                        backgroundColor: Colors.grey,
                         child: const Icon(
                           Icons.person,
                           size: 60,
@@ -42,13 +42,13 @@ class ProfileView extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       // User Name (Static)
-                      const Text(
-                        'John Doe',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      // const Text(
+                      //   'John Doe',
+                      //   style: TextStyle(
+                      //     fontSize: 24,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
                       const SizedBox(height: 8),
                       // User Role (Static)
                       Container(
@@ -57,7 +57,7 @@ class ProfileView extends StatelessWidget {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
+                          color: Colors.grey,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: const Text(

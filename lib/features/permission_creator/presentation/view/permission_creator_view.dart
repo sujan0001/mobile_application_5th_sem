@@ -24,9 +24,8 @@ class _PermissionCreatorViewState extends State<PermissionCreatorView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Incoming Transfer Requests'),
-        backgroundColor: Colors.blue[600],
-        foregroundColor: Colors.white,
+        title: const Text('Incoming Transfer Requests',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.grey.shade900,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -101,8 +100,10 @@ class _PermissionCreatorViewState extends State<PermissionCreatorView> {
 
   Widget _buildEmptyState() {
     return Center(
+      
       child: Padding(
         padding: const EdgeInsets.all(16.0),
+        
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
